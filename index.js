@@ -90,7 +90,7 @@ app.post('/upload', upload.single('image'), async(req, res) => {
         console.log('comment ',comment);
         
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const imageParts = [fileToGenerateOart(`images/${req.file.originalname}`,req.file.mimetype)];
+        const imageParts = [fileToGenerateOart(`/images/${req.file.originalname}`,req.file.mimetype)];
         const prompt = comment ? comment : "Please evaluate or explain content of this image";
         const result = await model.generateContent([prompt, ...imageParts]);
         const res1 = await result.response;
