@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>AI</title>
+</head>
+
+<body>
+    <h1>Upload an Image</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="image" name="image" accept="image/*" required><br><br>
+        <textarea id="comment" name="comment" placeholder="Enter your promt/question"></textarea><br><br>
+        <button type="submit">Upload</button>
+        <button type="button" id="resetButton">Reset</button>
+    </form>
+
+    <div class="grid">
+        <div class="img-grid-item item" id="preview">
+
+        </div>
+        <div class="result-grid-item item">
+            <p id="status"></p>
+        </div>
+    </div>
+
+    <script>
+
+        // Function to preview image
+        document.getElementById('image').addEventListener('change', function () {
+            const previewDiv = document.getElementById('preview');
+            const file = this.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="Image Preview">`;
+                };
+                reader.readAsDataURL(file); // Read file as data URL for image preview
+            } else {
+                previewDiv.innerHTML = '<p>No image selected</p>';
+            }
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData();
+            const imageFile = document.getElementById('image').files[0];
+            const comment = document.getElementById('comment').value;
+            formData.append('image', imageFile);
+            formData.append('promt', comment);
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                // document.getElementById('status').innerHTML = result?.answer;
+                typeWriter(result?.answer, 'status', 20); // Display text in typewriter effect
+            } catch (error) {
+                document.getElementById('status').textContent = 'Error uploading image.';
+            }
+        });
+
+        // Function for typewriter effect
+        function typeWriter(text, elementId, speed) {
+            let i = 0;
+            const element = document.getElementById(elementId);
+            element.innerHTML = ''; // Clear any previous text
+
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    element.style.borderRight = 'none'; // Remove blinking cursor effect when done
+                }
+            }
+
+            type(); // Start typing
+        }
+    
+    // Reset form function
+    document.getElementById('resetButton').addEventListener('click', () => {
+      // Clear file input
+      document.getElementById('image').value = '';
+
+      // Clear image preview
+      document.getElementById('preview').innerHTML = '<p>No image selected</p>';
+
+      // Clear comment box
+      document.getElementById('comment').value = '';
+
+      // Clear status message
+      document.getElementById('status').textContent = '';
+    });
+    
+    </script>
+</body>
+
+</html>

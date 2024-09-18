@@ -1,4 +1,6 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 const genai = require("@google/generative-ai");
 const fs = require("fs");
 const dotenv = require("dotenv");
@@ -8,7 +10,8 @@ const app = express();
 const port = 3000;
 
 const genAI = new genai.GoogleGenerativeAI(process.env.API_KEY);
-
+// Serve static files from public folder
+app.use(express.static('public'));
 // Middleware to parse JSON bodies
 app.use(express.json());
 
@@ -63,6 +66,48 @@ app.post('/post-data', (req, res) => {
     const data = req.body;  // Access data sent in the request body
     res.send(`Hello! This is a POST request with data: ${JSON.stringify(data)}`);
 });
+
+
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'images/'); // Directory to store images
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      console.log('file.originalname ',file.originalname);
+      console.log('file.fieldname ',file.fieldname);
+      cb(null, file.originalname); // Save with unique filename
+    }
+  });
+  const upload = multer({ storage: storage });
+
+// Define route for image upload
+app.post('/upload', upload.single('image'), async(req, res) => {
+    try {
+        const comment = req.body.promt;
+        console.log('comment ',comment);
+        
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const imageParts = [fileToGenerateOart(`images/${req.file.originalname}`,req.file.mimetype)];
+        const prompt = comment ? comment : "Please evaluate or explain content of this image";
+        const result = await model.generateContent([prompt, ...imageParts]);
+        const res1 = await result.response;
+        const text = res1.text();
+        res.json({
+            answer: text
+        });
+    } catch (err) {
+        console.log(err)
+      res.status(500).send('Error uploading image');
+    } finally{
+        console.log('Finally ');
+      
+    }
+  });
+
+
 
 // Start the server
 app.listen(port, () => {
