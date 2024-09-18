@@ -74,7 +74,7 @@ app.post('/post-data', (req, res) => {
 // Set up multer for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'images/'); // Directory to store images
+      cb(null, path.resolve(__dirname)); // Directory to store images
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -92,7 +92,7 @@ app.post('/upload', upload.single('image'), async(req, res) => {
         console.log('comment ',comment);
         
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const imageParts = [fileToGenerateOart(`./images/${req.file.originalname}`,req.file.mimetype)];
+        const imageParts = [fileToGenerateOart(`${req.file.originalname}`,req.file.mimetype)];
         const prompt = comment ? comment : "Please evaluate or explain content of this image";
         const result = await model.generateContent([prompt, ...imageParts]);
         const res1 = await result.response;
