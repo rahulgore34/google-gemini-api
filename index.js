@@ -7,7 +7,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const genAI = new genai.GoogleGenerativeAI(process.env.API_KEY);
 // Serve static files from public folder
