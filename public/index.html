@@ -1,37 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>AI</title>
-</head>
+  </head>
 
-<body>
-    <h1>Upload an Image</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="image" name="image" accept="image/*" required><br><br>
-        <textarea id="comment" name="comment" placeholder="Enter your promt/question"></textarea><br><br>
+  <body>
+    <header>
+      <div id="heading">
+        <h1>Note-Texter</h1>
+      </div>
+    </header>
+
+    <div id="uploader">
+      <h1>Upload an Image</h1>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="image" name="image" accept="image/*" required />
         <button type="submit">Upload</button>
         <button type="button" id="resetButton">Reset</button>
-    </form>
-
-    <div class="grid">
-        <div class="img-grid-item item" id="preview">
-
-        </div>
-        <div class="result-grid-item item">
-            <p id="status"></p>
-        </div>
+      </form>
     </div>
 
-     <!-- Block mask with spinner -->
-  <div id="mask">
-    <div id="spinner"></div>
-  </div>
+    <div class="grid">
+      <div class="img-grid-item item" id="preview"></div>
+      <div class="result-grid-item item">
+        <p id="status"></p>
+      </div>
+    </div>
 
-  <script src="main.js"></script>
-</body>
+    <!-- Block mask with spinner -->
+    <div id="mask">
+      <div id="spinner"></div>
+    </div>
 
+    <div id="text">
+      <textarea
+        id="comment"
+        name="comment"
+        placeholder="Enter your promt/question"
+      ></textarea>
+    </div>
+
+    <footer>
+      <div id="foot">
+        <p>Copyright © KGY | 2024 | NMIET</p>
+      </div>
+    </footer>
+
+    <script src="main.js"></script>
+  </body>
 </html>
