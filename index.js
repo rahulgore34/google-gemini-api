@@ -114,7 +114,7 @@ app.post('/upload', upload.single('image'), async(req, res) => {
 
   app.get('/testazure', (req, res)=>{
     res.json({
-        msg: 'Azure App'
+        msg: 'Azure App welcome'
     })
   }) 
 
